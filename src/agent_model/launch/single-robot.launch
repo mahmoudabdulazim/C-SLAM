@@ -1,0 +1,17 @@
+<launch>
+    <arg name="robot_name" default="robot"/>
+    <arg name="init_pose"  default=""/>
+
+    <node   name="spawn_minibot_model"
+	    pkg="gazebo_ros"
+	    type="spawn_model"
+	    args="$(arg init_pose) -urdf -param  /robot_description -model $(arg robot_name)"
+	    respawn="false"
+	    output="screen">
+    </node>
+    <node   name="joint_state_publisher"
+	    pkg="joint_state_publisher"
+	    type="joint_state_publisher"
+	    output="screen"
+    />
+</launch>
