@@ -241,7 +241,7 @@
                     <leftJoint>left_motor</leftJoint>
                     <rightJoint>right_motor</rightJoint>
 		    <wheelSeparation>0.3195</wheelSeparation>
-		    <publishWheelTF>true</publishWheelTF>
+		    <publishWheelTF>false</publishWheelTF>
                     <publishWheelJointState>true</publishWheelJointState>
                     <legacyMode>false</legacyMode>
                     <wheelAcceleration>9</wheelAcceleration>

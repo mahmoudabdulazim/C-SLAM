@@ -1,25 +1,21 @@
 <launch>
     <param name="robot_description" textfile="$(find agent_model)/urdf/agent_model.urdf"/>
     <group ns="robot1">
-	<param name="tf_prefix" value="robot1_tf" />
 	<include file="$(find agent_model)/launch/single-robot.launch" >
 	    <arg name="init_pose" value="-y 0 -x 0.5 -z 0" />
-	    <arg name="robot_name"  value="Robot_1" />
+	    <arg name="robot_name"  value="robot1" />
 	</include>
     </group>
     <group ns="robot2">
-	<param name="tf_prefix" value="robot2_tf" />
 	<include file="$(find agent_model)/launch/single-robot.launch" >
 	    <arg name="init_pose" value="-y -0.5 -x -0.5 -z 0" />
-	    <arg name="robot_name"  value="Robot_2" />
+	    <arg name="robot_name"  value="robot2" />
 	</include>
     </group>
-
     <group ns="robot3">
-	<param name="tf_prefix" value="robot3_tf" />
 	<include file="$(find agent_model)/launch/single-robot.launch" >
 	    <arg name="init_pose" value="-y 0.5 -x -0.5 -z 0" />
-	    <arg name="robot_name"  value="Robot_3" />
+	    <arg name="robot_name"  value="robot3" />
 	</include>
     </group>
 </launch>
