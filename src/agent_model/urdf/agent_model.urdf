@@ -247,14 +247,14 @@
                     <wheelAcceleration>9</wheelAcceleration>
 		    <wheelDiameter>0.1912</wheelDiameter>
                     <wheelTorque>30</wheelTorque>
-		    <odometrySource>encoder</odometrySource>
+		    <odometrySource>world</odometrySource>
                     <commandTopic>velocity_command</commandTopic>
                     <odometryTopic>odometry</odometryTopic>
 		    <odometryFrame>odometry_frame</odometryFrame>
 		    <robotBaseFrame>base_footprint</robotBaseFrame>
             </plugin>
         </gazebo>
-        <gazebo reference = "camera" >
+	<!--<gazebo reference = "camera" >
                 <sensor type="multicamera" name = "front_camera">
                         <update_rate>20.0</update_rate>
                         <camera name="right">
@@ -307,25 +307,25 @@
                                 <distortionT2>0.00</distortionT2>
                         </plugin>
                 </sensor>
-        </gazebo>
+	</gazebo> -->
         <gazebo reference="laser_scanner">
                 <sensor type="ray" name="head_hokuyo_sensor">
-                        <pose>0 0 0 0 0 0</pose>
+			<pose>0 0 0 0 0 0</pose>
                         <visualize>false</visualize>
                         <update_rate>20.0</update_rate>
                         <ray>
                                 <scan>
                                         <horizontal>
-                                                <samples>36</samples>
-                                                <resolution>10</resolution>
-                                                <min_angle>-1.570796</min_angle>
-                                                <max_angle> 1.570796</max_angle>
+						<samples>180</samples>
+						<resolution>10</resolution>
+						<min_angle>-3.14159265359</min_angle>
+						<max_angle> 3.14159265359</max_angle>
                                         </horizontal>
                                 </scan>
                                 <range>
                                         <min>0.1</min>
-                                        <max>10.0</max>
-                                        <resolution>0.01</resolution>
+					<max>20.0</max>
+					<resolution>0.05</resolution>
                                 </range>
                                 <noise>
                                         <type>gaussian</type>
@@ -339,7 +339,7 @@
                         </plugin>
                 </sensor>
         </gazebo>
-        <gazebo>
+	<!--<gazebo>
 	    <plugin name="imu_controller" filename="libhector_gazebo_ros_imu.so">
 		<alwaysOn>true</alwaysOn>
 		<updateRate>100.0</updateRate>
@@ -348,5 +348,5 @@
 		<accelGaussianNoise>0 0 0</accelGaussianNoise>
 		<rateGaussianNoise>0 0 0</rateGaussianNoise>
             </plugin>
-        </gazebo>
+	</gazebo> -->
 </robot>
