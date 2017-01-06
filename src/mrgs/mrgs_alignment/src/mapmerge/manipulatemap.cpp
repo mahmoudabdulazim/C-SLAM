@@ -42,8 +42,7 @@
 
 #include <iostream>
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/opencv.hpp>
 #include <iterator>
 
 using namespace std;
@@ -209,7 +208,7 @@ void rotate_map(grid_map& outmap,const grid_map& inmap,int thetaDeg,unsigned cha
 
 
    cvWarpAffine(img,dst,mat,
-	       cv::INTER_NEAREST + CV_WARP_FILL_OUTLIERS,
+           cv::INTER_NEAREST+ CV_WARP_FILL_OUTLIERS,
 	       cvScalarAll(filler));
 
   outmap.resize_map(r,c);
