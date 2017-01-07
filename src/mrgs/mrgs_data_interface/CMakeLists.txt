@@ -1,40 +1,23 @@
 cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+project(mrgs_data_interface)
 
-# Pull the latest lz4. We should check if we already have it!
-execute_process(COMMAND ../src/install_lz4.sh)
+find_package(catkin REQUIRED COMPONENTS roscpp wifi_comm std_msgs nav_msgs geometry_msgs message_generation message_runtime)
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-#set(ROS_BUILD_TYPE RelWithDebInfo)
+add_message_files(
+    FILES
+    ForeignMap.msg
+    ForeignMapVector.msg
+    LatestRobotPose.msg
+    LocalMap.msg
+    MacArray.msg
+    NetworkMap.msg)
 
-rosbuild_init()
+generate_messages(DEPENDENCIES std_msgs nav_msgs geometry_msgs)
 
-#set the default path for built executables to the "bin" directory
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-#set the default path for built libraries to the "lib" directory
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+include_directories(${catkin_INCLUDE_DIRS})
 
-#uncomment if you have defined messages
-rosbuild_genmsg()
-#uncomment if you have defined services
-#rosbuild_gensrv()
+catkin_package()
 
-#common commands for building c++ executables and libraries
-#rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
-#target_link_libraries(${PROJECT_NAME} another_library)
-#rosbuild_add_boost_directories()
-#rosbuild_link_boost(${PROJECT_NAME} thread)
-#rosbuild_add_executable(example examples/example.cpp)
-#target_link_libraries(example ${PROJECT_NAME})
-rosbuild_add_library(lz4 src/lz4/lz4.c)
-rosbuild_add_executable(data_interface_node src/data_interface_node.cpp)
-target_link_libraries(data_interface_node lz4)
-
-# Uncomment to make the compression test executable
-rosbuild_add_executable(compression_test_node src/compression_test_node.cpp)
-target_link_libraries(compression_test_node lz4)
+add_library(lz4 src/lz4/lz4.c)
+add_executable(data_interface_node src/data_interface_node.cpp)
+target_link_libraries(data_interface_node lz4 ${catkin_LIBRARIES})

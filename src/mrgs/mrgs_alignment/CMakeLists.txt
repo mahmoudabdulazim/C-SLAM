@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.4.6)
 project(mrgs_alignment)
 
-find_package(catkin REQUIRED COMPONENTS roscpp tf std_msgs nav_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp tf std_msgs nav_msgs message_generation message_runtime)
 find_package(OpenCV REQUIRED)
 
 include_directories(include ${catkin_INCLUDE_DIRS})
@@ -20,6 +20,8 @@ generate_messages(
 
 catkin_package(
     CATKIN_DEPENDS  roscpp tf std_msgs nav_msgs message_generation message_runtime
+    LIBRARIES       mapmerge
+    INCLUDE_DIRS    include
     DEPENDS         OpenCV)
 
 # Targets
