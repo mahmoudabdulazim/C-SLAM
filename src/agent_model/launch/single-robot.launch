@@ -69,10 +69,9 @@
 	    <remap from="/move_base_simple/goal" to="move_base_simple/goal" />
     </node>
     <include file="$(find mrgs_scripts)/launch/common.launch">
-        <remap from="/map" to="map"/>
-        <arg name="interface" value="$(arg interface)"/>
-        <arg name="is_centralized" value="false"/>
-        <arg name="launch_rviz" value="false"/>
-        <arg name="alt_mode" value="false"/>
+      <arg name="interface" value="$(arg interface)"/>
+      <arg name="is_centralized" value="false"/>
+      <arg name="launch_rviz" value="false"/>
+      <arg name="alt_mode" value="false"/>
     </include>
 </launch>

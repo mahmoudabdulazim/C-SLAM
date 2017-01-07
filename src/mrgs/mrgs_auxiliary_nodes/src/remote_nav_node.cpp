@@ -123,17 +123,17 @@ class RemoteNav{
           sprintf(child_frame, "/robot_%d/map", i);
         else
           if(centralized_mode)
-            sprintf(child_frame, "/robot_%d/map", i);
+            sprintf(child_frame, "/robot_%d/map_frame", i);
           else
-            sprintf(child_frame, "/map");
+            sprintf(child_frame, "/map_frame");
         broadcaster.sendTransform(tf::StampedTransform(*map_transform_vector.at(i), ros::Time::now(), frame, child_frame));
       }
     }
 
     for(int i = first_foreign_robot; i < base_transform_vector.size(); i++)
     {
-      sprintf(frame, "/robot_%d/map", i);
-      sprintf(child_frame, "/robot_%d/base_link", i);
+      sprintf(frame, "/robot_%d/map_frame", i);
+      sprintf(child_frame, "/robot_%d/base_footprint", i);
       if(base_transform_vector.at(i) != NULL)
       {
         broadcaster.sendTransform(tf::StampedTransform(*base_transform_vector.at(i), ros::Time::now(), frame, child_frame));
