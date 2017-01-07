@@ -1,6 +1,7 @@
 <launch>
+    <arg name="interface" default="$(optenv MRGS_INTERFACE)"/>
     <arg name="robot_name" default="robot"/>
-    <arg name="init_pose"  default=""/>
+    <arg name="init_pose"  default="0 0 0 0 0 0"/>
 
     <node   name="spawn_minibot_model"
 	    pkg="gazebo_ros"
@@ -67,4 +68,11 @@
 	    args="-d $(find agent_model)/rviz-configs/$(arg robot_name).rviz">
 	    <remap from="/move_base_simple/goal" to="move_base_simple/goal" />
     </node>
+    <include file="$(find mrgs_scripts)/launch/common.launch">
+        <remap from="/map" to="map"/>
+        <arg name="interface" value="$(arg interface)"/>
+        <arg name="is_centralized" value="false"/>
+        <arg name="launch_rviz" value="false"/>
+        <arg name="alt_mode" value="false"/>
+    </include>
 </launch>

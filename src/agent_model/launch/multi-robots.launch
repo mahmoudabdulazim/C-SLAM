@@ -6,6 +6,7 @@
 	    <arg name="robot_name"  value="robot1" />
 	</include>
     </group>
+    <!--
     <group ns="robot2">
 	<include file="$(find agent_model)/launch/single-robot.launch" >
 	    <arg name="init_pose" value="-y -0.5 -x -0.5 -z 0" />
@@ -17,5 +18,5 @@
 	    <arg name="init_pose" value="-y 0.5 -x -0.5 -z 0" />
 	    <arg name="robot_name"  value="robot3" />
 	</include>
-    </group>
+    </group> -->
 </launch>

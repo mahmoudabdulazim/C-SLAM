@@ -43,7 +43,7 @@
  * to avoid overloading it if a SLAM technique decides to publish maps very frequently.
  * 
  * Methodology:
- * The node intercepts the /map topic and publishes a new topic, which the data interface subscribes to. Since the data
+ * The node intercepts the map_frame topic and publishes a new topic, which the data interface subscribes to. Since the data
  * interface node is the entry point for maps in the system, this is enough to control the way maps enter the system.
  * This node receives raw maps from SLAM, and crops them, removing any excess padding, in order to facilitate the 
  * trasmission and alignment of the map.
@@ -59,7 +59,7 @@
 
 class MapDam{
   public:
-  // Callback for /map
+  // Callback for map_frame
   void processUnfilteredMap(const nav_msgs::OccupancyGrid::ConstPtr& unfiltered_map)
   {
     // Allocate a new publish-able map:
@@ -67,15 +67,15 @@ class MapDam{
     filtered_map.filtered_map = *unfiltered_map;
     
     // Get TF
-    if(listener->canTransform ("/base_link", "/map", ros::Time(0)))
+    if(listener->canTransform (listener->resolve("base_footprint"), listener->resolve("map_frame"), ros::Time(0)))
     {
-      tf::StampedTransform map_to_base_link;
-      listener->lookupTransform(std::string("/map"), std::string("/base_link"), ros::Time(0), map_to_base_link);
-      tf::transformStampedTFToMsg(map_to_base_link, filtered_map.map_to_base_link);
+      tf::StampedTransform map_to_base_footprint;
+      listener->lookupTransform(listener->resolve("map_frame"), listener->resolve("base_footprint"), ros::Time(0), map_to_base_footprint);
+      tf::transformStampedTFToMsg(map_to_base_footprint, filtered_map.map_to_base_link);
     }
     else
     {
-      ROS_WARN("Could not find map to base_link TF, aborting.");
+      ROS_WARN("Could not find map to base_footprint TF, aborting.");
       return;
     }
     
@@ -193,8 +193,8 @@ class MapDam{
     }
     
     // Correct Transformation
-    //to_crop.map_to_base_link.transform.translation.x -= right_column*to_crop.filtered_map.info.resolution;
-    //to_crop.map_to_base_link.transform.translation.y -= top_line*to_crop.filtered_map.info.resolution;
+    //to_crop.map_to_base_footprint.transform.translation.x -= right_column*to_crop.filtered_map.info.resolution;
+    //to_crop.map_to_base_footprint.transform.translation.y -= top_line*to_crop.filtered_map.info.resolution;
     to_crop.filtered_map.info.origin.position.x += left_column*to_crop.filtered_map.info.resolution;
     to_crop.filtered_map.info.origin.position.y += top_line*to_crop.filtered_map.info.resolution;
   }
