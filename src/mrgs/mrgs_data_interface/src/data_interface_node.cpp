@@ -58,7 +58,7 @@
  * -> ForeignMap: A map received from another robot.
  * -> ForeignMapVector: A vector with a foreign map for each robot we know.
  * -> NetworkMap: The datatype that flows across the network. Contains a compressed map that is decompressed into a
- * foreign map, as well as a map to base_link transform.
+ * foreign map, as well as a map to base_footprint transform.
  * -> LatestRobotPose: A Pose including the robot's ID, carried by a NetworkMap from a foreign robot, for transmission
  * into the internal network.
  */
@@ -232,9 +232,9 @@ void newRobotInNetwork(char * ip)
 {
   // Inform
   ROS_INFO("Connecting to new peer at %s.", ip);
-  char temp[128];
+
   // Send
-  g_my_comm->openForeignRelay(ip, "mrgs/external_map", true); //wifi_comm::WiFiComm::concatTopicAndIp(temp, "mrgs/external_map", ip));
+  g_my_comm->openForeignRelay(ip, "/mrgs/external_map", true);
 
   // Receive
   // We only need to receive maps if we are not simple transmitters.
@@ -242,7 +242,7 @@ void newRobotInNetwork(char * ip)
   {
     char topic[128];
     ROS_INFO("Subscribing to remote topic.");
-    ros::Subscriber sub = g_n->subscribe<mrgs_data_interface::NetworkMap>(wifi_comm::WiFiComm::concatTopicAndIp(topic, "mrgs/external_map", ip),
+    ros::Subscriber sub = g_n->subscribe<mrgs_data_interface::NetworkMap>(wifi_comm::WiFiComm::concatTopicAndIp(topic, "/mrgs/external_map", ip),
                                                                           1,  // Number of messages to keep on the input queue
                                                                           boost::bind(processForeignMap,
                                                                           std::string(ip), _1));
@@ -406,7 +406,7 @@ int main(int argc, char **argv)
   new_robot_callback = newRobotInNetwork;
   g_my_comm = new wifi_comm::WiFiComm(new_robot_callback);
   g_external_map = new ros::Publisher;
-  *g_external_map = g_n->advertise<mrgs_data_interface::NetworkMap>("mrgs/external_map", 10);
+  *g_external_map = g_n->advertise<mrgs_data_interface::NetworkMap>("/mrgs/external_map", 10);
   g_foreign_map_vector_publisher = g_n->advertise<mrgs_data_interface::ForeignMapVector>("mrgs/foreign_maps", 10);
   g_latest_pose = g_n->advertise<mrgs_data_interface::LatestRobotPose>("mrgs/remote_poses", 10);
   g_since_last_pose = ros::Time::now();

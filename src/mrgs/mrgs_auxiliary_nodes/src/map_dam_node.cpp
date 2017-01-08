@@ -35,7 +35,7 @@
 * Author: Gonçalo S. Martins, 2014
 *********************************************************************/
 
-/** 
+/**
  * map_dam_node
  *
  * Summary:
@@ -43,7 +43,7 @@
  * to avoid overloading it if a SLAM technique decides to publish maps very frequently.
  *
  * Methodology:
- * The node intercepts the map_frame topic and publishes a new topic, which the data interface subscribes to. Since the data
+ * The node intercepts the /map topic and publishes a new topic, which the data interface subscribes to. Since the data
  * interface node is the entry point for maps in the system, this is enough to control the way maps enter the system.
  * This node receives raw maps from SLAM, and crops them, removing any excess padding, in order to facilitate the
  * trasmission and alignment of the map.
@@ -59,146 +59,145 @@
 
 class MapDam{
   public:
-    // Callback for map_frame
-    void processUnfilteredMap(const nav_msgs::OccupancyGrid::ConstPtr& unfiltered_map)
+  // Callback for /map
+  void processUnfilteredMap(const nav_msgs::OccupancyGrid::ConstPtr& unfiltered_map)
+  {
+    // Allocate a new publish-able map:
+    mrgs_data_interface::LocalMap filtered_map;
+    filtered_map.filtered_map = *unfiltered_map;
+
+    // Get TF
+    if(listener->canTransform ("/base_footprint", "/map", ros::Time(0)))
     {
-      // Allocate a new publish-able map:
-      mrgs_data_interface::LocalMap filtered_map;
-      filtered_map.filtered_map = *unfiltered_map;
-
-      // Get TF
-      if(listener->canTransform (listener->resolve("/base_footprint"), listener->resolve("/map_frame"), ros::Time(0)))
-      {
-        tf::StampedTransform map_to_base_footprint;
-        listener->lookupTransform(listener->resolve("/map_frame"), listener->resolve("/base_footprint"), ros::Time(0), map_to_base_footprint);
-        tf::transformStampedTFToMsg(map_to_base_footprint, filtered_map.map_to_base_link);
-      }
-      else
-      {
-        ROS_WARN("Could not find map to base_footprint TF, aborting.");
-        ROS_INFO("Frames are: %s and %s", listener->resolve("/map_frame").c_str(),listener->resolve("/base_footprint").c_str());
-        return;
-      }
-
-      // Crop map to smallest rectangle
-      cropMap(filtered_map);
-      ROS_INFO("After cropping, the map has %d lines and %d columns.", filtered_map.filtered_map.info.height, filtered_map.filtered_map.info.width);
-
-
-
-      // Set this as the latest map
-      last_map = filtered_map;
-      published = false;
-      if(first_map)
-        received_first_map = true;
+      tf::StampedTransform map_to_base_footprint;
+      listener->lookupTransform(std::string("/map"), std::string("/base_footprint"), ros::Time(0), map_to_base_footprint);
+      tf::transformStampedTFToMsg(map_to_base_footprint, filtered_map.map_to_base_link);
+    }
+    else
+    {
+      ROS_WARN("Could not find map to base_footprint TF, aborting.");
+      return;
     }
 
-    void publishIfProper()
+    // Crop map to smallest rectangle
+    cropMap(filtered_map);
+    ROS_INFO("After cropping, the map has %d lines and %d columns.", filtered_map.filtered_map.info.height, filtered_map.filtered_map.info.width);
+
+
+
+    // Set this as the latest map
+    last_map = filtered_map;
+    published = false;
+    if(first_map)
+      received_first_map = true;
+  }
+
+  void publishIfProper()
+  {
+    // This function decides if it's time to publish, and publishes if justified.
+    // If we've never received any maps, we won't be publishing anything
+    if(!received_first_map)
+      return;
+
+    // If this is the first map, we want to publish it immediately
+    if(first_map)
     {
-      // This function decides if it's time to publish, and publishes if justified.
-      // If we've never received any maps, we won't be publishing anything
-      if(!received_first_map)
-        return;
-
-      // If this is the first map, we want to publish it immediately
-      if(first_map)
-      {
-        first_map = false;
-        map_publisher.publish(last_map);
-        ROS_INFO("Inserted the first map into the system.");
-        published = true;
-        return;
-      }
-
-      // Decision method goes here
-      if(!published)
-      {
-        map_publisher.publish(last_map);
-        debug_publisher.publish(last_map.filtered_map);
-        ROS_INFO("Inserted a map into the system.");
-        published = true;
-      }
+      first_map = false;
+      map_publisher.publish(last_map);
+      ROS_INFO("Inserted the first map into the system.");
+      published = true;
+      return;
     }
 
-    // Constructor
-    // We need the node handle to initialize the publisher and subscriber
-    MapDam(ros::NodeHandle* n_p)
+    // Decision method goes here
+    if(!published)
     {
-      first_map = true;
-      published = false;
-      received_first_map = false;
-      map_publisher = n_p->advertise<mrgs_data_interface::LocalMap>("mrgs/local_map", 2);
-      map_subscriber = n_p->subscribe("map", 2, &MapDam::processUnfilteredMap, this);
-      debug_publisher = n_p->advertise<nav_msgs::OccupancyGrid>("mrgs/local_map/debug", 2);
-      listener = new tf::TransformListener;
+      map_publisher.publish(last_map);
+      debug_publisher.publish(last_map.filtered_map);
+      ROS_INFO("Inserted a map into the system.");
+      published = true;
     }
+  }
 
-    ~MapDam()
-    {
-      delete listener;
-    }
+  // Constructor
+  // We need the node handle to initialize the publisher and subscriber
+  MapDam(ros::NodeHandle* n_p)
+  {
+    first_map = true;
+    published = false;
+    received_first_map = false;
+    map_publisher = n_p->advertise<mrgs_data_interface::LocalMap>("mrgs/local_map", 2);
+    map_subscriber = n_p->subscribe("map", 2, &MapDam::processUnfilteredMap, this);
+    debug_publisher = n_p->advertise<nav_msgs::OccupancyGrid>("mrgs/local_map/debug", 2);
+    listener = new tf::TransformListener;
+  }
+
+  ~MapDam()
+  {
+    delete listener;
+  }
 
   private:
-    // Current received map
-    mrgs_data_interface::LocalMap last_map;
-    // Has this map been published?
-    bool published;
-    // Is this the first map we've ever received?
-    bool first_map;
-    // Have we ever received any maps?
-    bool received_first_map;
-    // Map publisher
-    ros::Publisher map_publisher;
-    ros::Publisher debug_publisher;
-    // Map subscriber
-    ros::Subscriber map_subscriber;
-    // TF listener
-    tf::TransformListener *listener;
-    // Crops a map to the smallest rectangle
-    void cropMap(mrgs_data_interface::LocalMap& to_crop)
+  // Current received map
+  mrgs_data_interface::LocalMap last_map;
+  // Has this map been published?
+  bool published;
+  // Is this the first map we've ever received?
+  bool first_map;
+  // Have we ever received any maps?
+  bool received_first_map;
+  // Map publisher
+  ros::Publisher map_publisher;
+  ros::Publisher debug_publisher;
+  // Map subscriber
+  ros::Subscriber map_subscriber;
+  // TF listener
+  tf::TransformListener *listener;
+  // Crops a map to the smallest rectangle
+  void cropMap(mrgs_data_interface::LocalMap& to_crop)
+  {
+    // Determine map's region of interest, for cropping
+    int top_line = -1, bottom_line = -1, left_column = -1, right_column = -1;
+    for(int i = 0; i < to_crop.filtered_map.data.size(); i++)
     {
-      // Determine map's region of interest, for cropping
-      int top_line = -1, bottom_line = -1, left_column = -1, right_column = -1;
-      for(int i = 0; i < to_crop.filtered_map.data.size(); i++)
-      {
-        if(to_crop.filtered_map.data.at(i) != -1)
-        {
-          int line = i/to_crop.filtered_map.info.width;
-          int col = i%to_crop.filtered_map.info.width;
-          if(top_line == -1)
-            top_line = line;
-          if(left_column == -1)
-            left_column = col;
-          if(col < left_column)
-            left_column = col;
-          if(col > right_column)
-            right_column = col;
-          if(line > bottom_line)
-            bottom_line = line;
-        }
-      }
-      ROS_DEBUG("Smallest rectangle found: (%d,%d) to (%d,%d). Original: (%dx%d).", top_line, left_column, bottom_line, right_column, to_crop.filtered_map.info.height, to_crop.filtered_map.info.width);
-
-      // Resize vector and copy data
-      std::vector<int8_t> data_copy = to_crop.filtered_map.data;
-      int old_w = to_crop.filtered_map.info.width, old_h = to_crop.filtered_map.info.height;
-      int new_w = right_column-left_column, new_h = bottom_line-top_line;
-      to_crop.filtered_map.info.width = new_w;
-      to_crop.filtered_map.info.height = new_h;
-      to_crop.filtered_map.data.resize(new_w*new_h);
-      for(int i = 0; i < to_crop.filtered_map.data.size(); i++)
+      if(to_crop.filtered_map.data.at(i) != -1)
       {
         int line = i/to_crop.filtered_map.info.width;
         int col = i%to_crop.filtered_map.info.width;
-        to_crop.filtered_map.data.at(i) = data_copy.at((line + top_line)*old_w + (col+left_column));
+        if(top_line == -1)
+          top_line = line;
+        if(left_column == -1)
+          left_column = col;
+        if(col < left_column)
+          left_column = col;
+        if(col > right_column)
+          right_column = col;
+        if(line > bottom_line)
+          bottom_line = line;
       }
-
-      // Correct Transformation
-      //to_crop.map_to_base_footprint.transform.translation.x -= right_column*to_crop.filtered_map.info.resolution;
-      //to_crop.map_to_base_footprint.transform.translation.y -= top_line*to_crop.filtered_map.info.resolution;
-      to_crop.filtered_map.info.origin.position.x += left_column*to_crop.filtered_map.info.resolution;
-      to_crop.filtered_map.info.origin.position.y += top_line*to_crop.filtered_map.info.resolution;
     }
+    ROS_DEBUG("Smallest rectangle found: (%d,%d) to (%d,%d). Original: (%dx%d).", top_line, left_column, bottom_line, right_column, to_crop.filtered_map.info.height, to_crop.filtered_map.info.width);
+
+    // Resize vector and copy data
+    std::vector<int8_t> data_copy = to_crop.filtered_map.data;
+    int old_w = to_crop.filtered_map.info.width, old_h = to_crop.filtered_map.info.height;
+    int new_w = right_column-left_column, new_h = bottom_line-top_line;
+    to_crop.filtered_map.info.width = new_w;
+    to_crop.filtered_map.info.height = new_h;
+    to_crop.filtered_map.data.resize(new_w*new_h);
+    for(int i = 0; i < to_crop.filtered_map.data.size(); i++)
+    {
+      int line = i/to_crop.filtered_map.info.width;
+      int col = i%to_crop.filtered_map.info.width;
+      to_crop.filtered_map.data.at(i) = data_copy.at((line + top_line)*old_w + (col+left_column));
+    }
+
+    // Correct Transformation
+    //to_crop.map_to_base_footprint.transform.translation.x -= right_column*to_crop.filtered_map.info.resolution;
+    //to_crop.map_to_base_footprint.transform.translation.y -= top_line*to_crop.filtered_map.info.resolution;
+    to_crop.filtered_map.info.origin.position.x += left_column*to_crop.filtered_map.info.resolution;
+    to_crop.filtered_map.info.origin.position.y += top_line*to_crop.filtered_map.info.resolution;
+  }
 };
 
 int main(int argc, char **argv)

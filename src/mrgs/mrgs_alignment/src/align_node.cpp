@@ -401,7 +401,7 @@ bool align(mrgs_alignment::align::Request &req, mrgs_alignment::align:: Response
   // DEBUG: Show origins
   geometry_msgs::PoseStamped debug_pose;
   debug_pose.pose = req.map2.info.origin;
-  debug_pose.header.frame_id = std::string("/map");
+  debug_pose.header.frame_id = std::string("/robot_1/map");
   //pose_publisher.publish(debug_pose);
 
 
@@ -437,7 +437,7 @@ int main(int argc, char **argv)
   ros::ServiceServer service = n.advertiseService("align", align);
 
   // DEBUG: initialize pose publisher
-  pose_publisher = n.advertise<geometry_msgs::PoseStamped>("map_1_origin", 10);
+  pose_publisher = n.advertise<geometry_msgs::PoseStamped>("/map_1_origin", 10);
 
   /// Calibration
   mapmerge::grid_map a,b;

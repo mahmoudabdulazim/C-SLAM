@@ -311,9 +311,9 @@ void processForeignMaps(const mrgs_data_interface::ForeignMapVector::ConstPtr& m
     }
 
     // Pack into message
-    tf::transformStampedTFToMsg(tf::StampedTransform(temp_TF, ros::Time::now(), "/complete_map", std::string(std::string("robot") + std::string(buffer) + std::string("/map_frame"))), temp_transform);
-    temp_transform.header.frame_id = "/complete_map";
-    temp_transform.child_frame_id = std::string(std::string("robot") + std::string(buffer) + std::string("/map_frame"));
+    tf::transformStampedTFToMsg(tf::StampedTransform(temp_TF, ros::Time::now(), "complete_map", std::string(std::string("robot_") + std::string(buffer) + std::string("/map"))), temp_transform);
+    temp_transform.header.frame_id = "complete_map";
+    temp_transform.child_frame_id = std::string(std::string("robot_") + std::string(buffer) + std::string("/map"));
     temp_transform.header.stamp = ros::Time::now();
     // Publish it
     ROS_DEBUG("Publishing transform for robot %d.", i);
@@ -326,7 +326,7 @@ void processForeignMaps(const mrgs_data_interface::ForeignMapVector::ConstPtr& m
   /// Publish our new, shiny, complete map and report performance
   // Use a latched topic, so that the last map is accessible to new subscribers.
   ROS_DEBUG("Publishing new complete map.");
-  g_aligned_maps.at(g_aligned_maps.size()-1).at(0).header.frame_id = "/complete_map";
+  g_aligned_maps.at(g_aligned_maps.size()-1).at(0).header.frame_id = "complete_map";
   g_complete_map_pub.publish(g_aligned_maps.at(g_aligned_maps.size()-1).at(0));
   ROS_INFO("Map vector processing took %fs.", (ros::Time::now() - init).toSec());
 }

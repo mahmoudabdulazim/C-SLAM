@@ -20,7 +20,7 @@
     <node   name="slam_gmapping"		pkg="gmapping"	    type="slam_gmapping">
             <param name="base_frame"		value="/base_footprint" />
             <param name="odom_frame"		value="/odometry_frame" />
-            <param name="map_frame"		value="/map_frame" />
+            <param name="map_frame"		value="/map" />
             <remap from="scan"			to="/laser/scan" />
 	    <param name="map_update_interval"	value="2"/>
 	    <param name="maxUrange"		value="20.0"/>

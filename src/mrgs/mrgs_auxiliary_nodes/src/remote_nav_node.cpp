@@ -77,11 +77,11 @@ class RemoteNav{
     map_transform_vector.at(remote_transform->id) = new tf::Transform(new_transform);
 
   }
-  // Method that processes remote map to base_link transforms
+  // Method that processes remote map to base_footprint transforms
   void processPose(const mrgs_data_interface::LatestRobotPose::ConstPtr& remote_pose)
   {
     // Add the received transform to the vector.
-    ROS_INFO("Processing new map to base_link transform.");
+    ROS_INFO("Processing new map to base_footprint transform.");
     while(base_transform_vector.size() < remote_pose->id+1)
       base_transform_vector.push_back(NULL);
 
@@ -120,20 +120,20 @@ class RemoteNav{
       {
         sprintf(frame, "/complete_map");
         if(i > 0)
-          sprintf(child_frame, "/robot%d/map", i);
+          sprintf(child_frame, "/robot_%d/map", i);
         else
           if(centralized_mode)
-            sprintf(child_frame, "/robot%d/map_frame", i);
+            sprintf(child_frame, "/robot_%d/map", i);
           else
-            sprintf(child_frame, "/map_frame");
+            sprintf(child_frame, "/map");
         broadcaster.sendTransform(tf::StampedTransform(*map_transform_vector.at(i), ros::Time::now(), frame, child_frame));
       }
     }
 
     for(int i = first_foreign_robot; i < base_transform_vector.size(); i++)
     {
-      sprintf(frame, "/robot%d/map_frame", i);
-      sprintf(child_frame, "/robot%d/base_footprint", i);
+      sprintf(frame, "/robot_%d/map", i);
+      sprintf(child_frame, "/robot_%d/base_footprint", i);
       if(base_transform_vector.at(i) != NULL)
       {
         broadcaster.sendTransform(tf::StampedTransform(*base_transform_vector.at(i), ros::Time::now(), frame, child_frame));
@@ -144,7 +144,7 @@ class RemoteNav{
   private:
   // Holds all current complete_map to map transforms
   std::vector<tf::Transform*> map_transform_vector;
-  // Holds all current map to base_link transforms
+  // Holds all current map to base_footprint transforms
   std::vector<tf::Transform*> base_transform_vector;
   // Subscribers
   ros::Subscriber remote_pose_sub;
