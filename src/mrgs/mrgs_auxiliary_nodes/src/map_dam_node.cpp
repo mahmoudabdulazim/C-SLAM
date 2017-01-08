@@ -67,16 +67,16 @@ class MapDam{
       filtered_map.filtered_map = *unfiltered_map;
 
       // Get TF
-      if(listener->canTransform (listener->resolve("robot1/base_footprint"), listener->resolve("robot1/map_frame"), ros::Time(0)))
+      if(listener->canTransform (listener->resolve("/base_footprint"), listener->resolve("/map_frame"), ros::Time(0)))
       {
         tf::StampedTransform map_to_base_footprint;
-        listener->lookupTransform(listener->resolve("robot1/map_frame"), listener->resolve("robot1/base_footprint"), ros::Time(0), map_to_base_footprint);
+        listener->lookupTransform(listener->resolve("/map_frame"), listener->resolve("/base_footprint"), ros::Time(0), map_to_base_footprint);
         tf::transformStampedTFToMsg(map_to_base_footprint, filtered_map.map_to_base_link);
       }
       else
       {
         ROS_WARN("Could not find map to base_footprint TF, aborting.");
-        ROS_INFO("Frames are: %s and %s", listener->resolve("robot1/map_frame").c_str(),listener->resolve("robot1/base_footprint").c_str());
+        ROS_INFO("Frames are: %s and %s", listener->resolve("/map_frame").c_str(),listener->resolve("/base_footprint").c_str());
         return;
       }
 
