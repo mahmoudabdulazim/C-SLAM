@@ -4,10 +4,9 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /Global Options1
         - /Map1/Position1
         - /Map1/Orientation1
-        - /Path1
-        - /Map2
       Splitter Ratio: 0.5
     Tree Height: 768
   - Class: rviz/Selection
@@ -96,7 +95,7 @@ Visualization Manager:
           Value: true
       Name: RobotModel
       Robot Description: robot_description
-      TF Prefix: robot1
+      TF Prefix: ""
       Update Interval: 0
       Value: true
       Visual Enabled: false
@@ -106,14 +105,14 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /robot1/map
+      Topic: /map
       Unreliable: false
       Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 16.0168457
-        Min Value: -3.83682823
+        Max Value: 3.19272232
+        Min Value: -12.4412842
         Value: true
       Axis: X
       Channel Name: x
@@ -134,7 +133,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.100000001
       Style: Boxes
-      Topic: /robot1/laser/scan
+      Topic: /laser/scan
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -158,7 +157,7 @@ Visualization Manager:
       Radius: 0.0299999993
       Shaft Diameter: 0.100000001
       Shaft Length: 0.100000001
-      Topic: /robot1/move_base/GlobalPlanner/plan
+      Topic: /move_base/GlobalPlanner/plan
       Unreliable: false
       Value: true
     - Alpha: 1
@@ -166,7 +165,7 @@ Visualization Manager:
       Color: 25; 255; 0
       Enabled: true
       Name: Polygon
-      Topic: /robot1/move_base/global_costmap/footprint
+      Topic: /move_base/global_costmap/footprint
       Unreliable: false
       Value: true
     - Alpha: 0.699999988
@@ -175,13 +174,13 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /robot1/mrgs/complete_map
+      Topic: /mrgs/complete_map
       Unreliable: false
       Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: robot1/map_frame
+    Fixed Frame: map_frame
     Frame Rate: 30
   Name: root
   Tools:
@@ -202,16 +201,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 36.9271545
+      Distance: 9.67829514
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.229974106
-        Y: -15.5115595
-        Z: -0.97125113
+        X: -0.170014724
+        Y: -3.63009357
+        Z: 0.434589416
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Name: Current View
@@ -219,7 +218,7 @@ Visualization Manager:
       Pitch: 0.669797361
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.18930054
+      Yaw: 6.18430042
     Saved: ~
 Window Geometry:
   "&Displays":

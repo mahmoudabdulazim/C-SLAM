@@ -234,7 +234,7 @@ void newRobotInNetwork(char * ip)
   ROS_INFO("Connecting to new peer at %s.", ip);
   char temp[128];
   // Send
-  g_my_comm->openForeignRelay(ip, "mrgs/external_map", wifi_comm::WiFiComm::concatTopicAndIp(temp, "mrgs/external_map", ip));
+  g_my_comm->openForeignRelay(ip, "mrgs/external_map", true); //wifi_comm::WiFiComm::concatTopicAndIp(temp, "mrgs/external_map", ip));
 
   // Receive
   // We only need to receive maps if we are not simple transmitters.
