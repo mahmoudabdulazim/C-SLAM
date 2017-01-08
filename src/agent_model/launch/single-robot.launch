@@ -52,7 +52,7 @@
             <param name="local_costmap/robot_base_frame"	value="/base_footprint" />
 	    <rosparam file="$(find agent_model)/params/global_costmap_params.yaml"
 		      command="load" />
-            <param name="global_costmap/global_frame"		value="/map_frame" />
+            <param name="global_costmap/global_frame"		value="/map" />
             <param name="global_costmap/robot_base_frame"	value="/base_footprint" />
 	    <rosparam file="$(find agent_model)/params/base_local_planner_params.yaml"
 		      command="load" />

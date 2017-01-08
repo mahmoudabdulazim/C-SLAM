@@ -111,8 +111,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 3.19272232
-        Min Value: -12.4412842
+        Max Value: 3.27745318
+        Min Value: -9.29706192
         Value: true
       Axis: X
       Channel Name: x
@@ -180,7 +180,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: map_frame
+    Fixed Frame: map
     Frame Rate: 30
   Name: root
   Tools:
@@ -201,7 +201,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 9.67829514
+      Distance: 11.2029705
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
