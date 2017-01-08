@@ -38,6 +38,7 @@
 	    <param name="str"			value="0.01"/>
 	    <param name="srt"			value="0.02"/>
 	    <param name="stt"			value="0.02"/>
+            <param name="delta"			value="0.10"/>
     </node>
     <node   name="move_base"			pkg="move_base"	    type="move_base">
 	    <param name="base_global_planner"	type="string" value="global_planner/GlobalPlanner" />
