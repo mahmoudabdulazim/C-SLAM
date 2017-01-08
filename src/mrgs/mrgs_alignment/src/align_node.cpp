@@ -302,7 +302,7 @@ bool align(mrgs_alignment::align::Request &req, mrgs_alignment::align:: Response
   ROS_DEBUG("Packing results into response.");
   res.merged_map.data.resize(map_final_r*map_final_c);
   res.merged_map.info.resolution = req.map1.info.resolution;
-  res.merged_map.header.frame_id = "/complete_map";
+  res.merged_map.header.frame_id = "complete_map";
   res.merged_map.info.width = map_final_c;
   res.merged_map.info.height = map_final_r;
   res.merged_map.info.origin = req.map1.info.origin;
@@ -401,7 +401,7 @@ bool align(mrgs_alignment::align::Request &req, mrgs_alignment::align:: Response
   // DEBUG: Show origins
   geometry_msgs::PoseStamped debug_pose;
   debug_pose.pose = req.map2.info.origin;
-  debug_pose.header.frame_id = std::string("/robot_1/map");
+  debug_pose.header.frame_id = std::string("robot1/map");
   //pose_publisher.publish(debug_pose);
 
 
@@ -437,7 +437,7 @@ int main(int argc, char **argv)
   ros::ServiceServer service = n.advertiseService("align", align);
 
   // DEBUG: initialize pose publisher
-  pose_publisher = n.advertise<geometry_msgs::PoseStamped>("/map_1_origin", 10);
+  pose_publisher = n.advertise<geometry_msgs::PoseStamped>("map_1_origin", 10);
 
   /// Calibration
   mapmerge::grid_map a,b;

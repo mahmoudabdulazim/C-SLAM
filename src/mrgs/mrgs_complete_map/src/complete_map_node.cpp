@@ -311,9 +311,9 @@ void processForeignMaps(const mrgs_data_interface::ForeignMapVector::ConstPtr& m
     }
 
     // Pack into message
-    tf::transformStampedTFToMsg(tf::StampedTransform(temp_TF, ros::Time::now(), "complete_map", std::string(std::string("robot_") + std::string(buffer) + std::string("/map"))), temp_transform);
+    tf::transformStampedTFToMsg(tf::StampedTransform(temp_TF, ros::Time::now(), "complete_map", std::string(std::string("robot") + std::string(buffer) + std::string("/map"))), temp_transform);
     temp_transform.header.frame_id = "complete_map";
-    temp_transform.child_frame_id = std::string(std::string("robot_") + std::string(buffer) + std::string("/map"));
+    temp_transform.child_frame_id = std::string(std::string("robot") + std::string(buffer) + std::string("/map"));
     temp_transform.header.stamp = ros::Time::now();
     // Publish it
     ROS_DEBUG("Publishing transform for robot %d.", i);
