@@ -64,10 +64,18 @@
             args="-d $(find agent_model)/rviz-configs/config.rviz">
 	    <remap from="/move_base_simple/goal" to="move_base_simple/goal" />
     </node>
+    <node   name="map_server_ground_truth"
+	    pkg="map_server"
+	    type="map_server"
+            args="$(find agent_model)/maps/willow_garage/ground-truth-willow-garage.yaml">
+	    <remap from="map" to="ground_truth_map" />
+    </node>
+<!--
     <include file="$(find mrgs_scripts)/launch/common.launch">
       <arg name="interface" value="$(arg interface)"/>
       <arg name="is_centralized" value="false"/>
       <arg name="launch_rviz" value="false"/>
       <arg name="alt_mode" value="false"/>
     </include>
+-->
 </launch>

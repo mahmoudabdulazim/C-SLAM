@@ -7,20 +7,16 @@
                     used by the data interface node to work out how to build the map vector.
 -->
 <launch>
-
   <env name="ROSCONSOLE_FORMAT" value="[${severity}] [${node}]: ${message}"/>
-
   <!-- Arguments -->
   <arg name="interface"/>
   <arg name="is_centralized"/>
   <arg name="launch_rviz"/>
   <arg name="alt_mode"/>
-
   <!-- Parameters -->
   <param name="is_centralized" value="$(arg is_centralized)" />
   <param name="interface" value="$(arg interface)" />
   <param name="is_transmitter" value="false" />
-
   <!-- mrgs -->
   <!-- wifi_comm node -->
   <node name="wifi_discovery_node" pkg="wifi_comm" type="wifi_discovery_node" />
@@ -35,11 +31,6 @@
   <node name="remote_nav_node" pkg="mrgs_auxiliary_nodes" type="remote_nav_node" output="screen"/>
   <!-- dam node -->
   <node name="map_dam_node" pkg="mrgs_auxiliary_nodes" type="map_dam_node" output="screen" unless="$(arg is_centralized)"/>
-
   <!-- Rviz -->
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mrgs_scripts)/rviz/only_map.vcg" if="$(arg launch_rviz)" />
-
-  <!-- rqt_console -->
-  <!--node name="console" pkg="rqt_console" type="rqt_console"/-->
-  <!--node name="logger_level" pkg="rqt_logger_level" type="rqt_logger_level"/-->
 </launch>
